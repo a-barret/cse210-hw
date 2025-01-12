@@ -12,23 +12,23 @@ class Program
 
         if (gradepercent >= 90)
         {
-            string letter = "A";
+            letter = "A";
         }
         else if (gradepercent >= 80)
         {
-            string letter = "B";
+            letter = "B";
         }
         else if (gradepercent >= 70)
         {
-            string letter = "C";
+            letter = "C";
         }
         else if (gradepercent >= 60)
         {
-            string letter = "D";
+            letter = "D";
         }
         else
         {
-            string letter = "F";
+            letter = "F";
         }
 
         Console.WriteLine($"Your letter grade is: {letter}");
