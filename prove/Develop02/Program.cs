@@ -5,6 +5,7 @@ class Program
     static void Main(string[] args)
     {
         Prompt prompt = new Prompt();
+        Console.WriteLine();
         Console.WriteLine(prompt._greeting);
 
         Journal myJournal = new Journal();
@@ -37,12 +38,14 @@ Menu Choice: "
 
             } else if (menuChoice == 3) {
 
+                Console.WriteLine();
                 Console.WriteLine("Enter the file name:");
                 string fileName = Console.ReadLine();
                 myJournal.SaveFile(fileName);
 
             } else if (menuChoice == 4) {
 
+                Console.WriteLine();
                 Console.WriteLine("Enter the file name:");
                 string fileName = Console.ReadLine();
                 myJournal = myJournal.LoadFile(fileName);

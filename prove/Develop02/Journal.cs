@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 
 public class Journal
 {
@@ -12,7 +11,8 @@ public class Journal
         myEntry._promptAnswered = promptAnswered;
         myEntry._userInput = userInput;
         _entries.Add(myEntry);
-        Console.WriteLine("\nEntry added to your journal.");
+        Console.WriteLine();
+        Console.WriteLine("Entry added to your journal.");
     }
 
     public void Display()
@@ -21,9 +21,11 @@ public class Journal
         {
             e.Display();
         }
-        Console.WriteLine("\n[End of journal entries]");
+        Console.WriteLine();
+        Console.WriteLine("[End of journal entries]");
     }
 
+    // Method to save the journal to the file.
     public void SaveFile(string fileName)
     {
         using (StreamWriter outputFile = new StreamWriter(fileName))
@@ -33,6 +35,7 @@ public class Journal
                 outputFile.WriteLine($"{e._dateTime}|{e._promptAnswered}|{e._userInput}");
             }
         }
+        Console.WriteLine();
         Console.WriteLine($"Journal saved to {fileName}.");
     }
 
@@ -49,6 +52,7 @@ public class Journal
             entry._userInput = parts[2];
             journal._entries.Add(entry);
         }
+        Console.WriteLine();
         Console.WriteLine($"Journal loaded from {fileName}.");
         return journal;
     }
