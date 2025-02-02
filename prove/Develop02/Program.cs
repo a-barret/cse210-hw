@@ -2,7 +2,7 @@
 // title to the file that they choose to save it to. It will ask the user for a journal title when
 // they go to save the journal if they have not already named it. It will also reload the title by
 // handling the first line of the file separately in the loadFile() function. The journal title is
-// stored in the "Journal._title" atribute.
+// stored in the "Journal._title" attribute.
 
 using System;
 
