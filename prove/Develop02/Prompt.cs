@@ -1,5 +1,6 @@
 public class Prompt
 {
+    // Default list of prompts to be shown with every new journal entry.
     public List<string> _prompts {get; set;} = new List<string> {
         "Who was the most interesting person I interacted with today?",
         "What was the best part of my day?",
