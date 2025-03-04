@@ -1,4 +1,4 @@
-// For my exceeding requiements fulfillment, I created report functionality to my program. I did
+// For my exceeding requirements fulfillment, I created report functionality to my program. I did
 // this by first creating a "Report.cs" file. This contains the "Report" class. The class keeps
 // a record of the number of seconds each activity is done for as well as the total number of
 // seconds any activity is done for. The user can select to view a report of the time spent in
