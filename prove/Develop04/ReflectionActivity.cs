@@ -47,7 +47,7 @@ Consider the following prompt:
 
  --- {_prompts[number]} ---
  
-When you have something in mind, press enter to continue.";
+When you have something in mind, press ENTER to continue.";
     }
     public string GetReflectionPrepMessage()
     {

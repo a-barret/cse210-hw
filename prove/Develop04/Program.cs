@@ -6,6 +6,9 @@ class Program
     {
         string menuSelection;
 
+        Report report = new Report();
+
+
         static void Menu()
         {
             Console.Clear();
@@ -13,7 +16,8 @@ class Program
   1. Start Breathing Activity
   2. Start Reflecting Activity
   3. Start Listing Activity
-  4. Quit
+  4. View Activity Report
+  5. Quit
 Select a choice from the menu: ");
         }
 
@@ -65,7 +69,7 @@ Select a choice from the menu: ");
             Console.Clear();
 
             activity.SetDuration(duration);
-            
+
             Console.WriteLine(activity.GetPrepMessage());
             AnimateLoading(activity.GetPauseLength());
         }
@@ -77,18 +81,23 @@ Select a choice from the menu: ");
             int itemsListed = 0;
             while (DateTime.Now < endTime)
             {
-                if (activity is BreathingActivity breathingActivity) {
-                    Console.Write(breathingActivity.GetBreathMessage());
-                    AnimateCountdown(breathingActivity.GetBreathDuration());
-                    Console.WriteLine();
-                } else if (activity is ReflectionActivity reflectionActivity) {
-                    Console.Write(reflectionActivity.GetQuestion() + " ");
-                    AnimateLoading(reflectionActivity.GetReflectionDuration());
-                    Console.WriteLine();
-                } else if (activity is ListingActivity) {
-                    Console.Write("> ");
-                    Console.ReadLine();
-                    itemsListed += 1;
+                switch (activity)
+                {
+                    case BreathingActivity breathingActivity:
+                        Console.Write(breathingActivity.GetBreathMessage());
+                        AnimateCountdown(breathingActivity.GetBreathDuration());
+                        Console.WriteLine();
+                        break;
+                    case ReflectionActivity reflectionActivity:
+                        Console.Write(reflectionActivity.GetQuestion() + " ");
+                        AnimateLoading(reflectionActivity.GetReflectionDuration());
+                        Console.WriteLine();
+                        break;
+                    case ListingActivity:
+                        Console.Write("> ");
+                        Console.ReadLine();
+                        itemsListed += 1;
+                        break;
                 }
             }
             return $"You listed {itemsListed} items!";
@@ -103,7 +112,8 @@ Select a choice from the menu: ");
             AnimateLoading(activity.GetPauseLength());
         }
 
-        do {
+        do
+        {
             Menu();
             menuSelection = Console.ReadLine();
 
@@ -118,7 +128,11 @@ Select a choice from the menu: ");
 
                     FinishActivity(breathingActivity);
 
+                    report.SetSeconds(breathingActivity);
+
                     break;
+
+
                 case "2":
                     ReflectionActivity reflectionActivity = new ReflectionActivity();
 
@@ -135,7 +149,11 @@ Select a choice from the menu: ");
 
                     FinishActivity(reflectionActivity);
 
+                    report.SetSeconds(reflectionActivity);
+
                     break;
+
+
                 case "3":
                     ListingActivity listingActivity = new ListingActivity();
 
@@ -144,16 +162,42 @@ Select a choice from the menu: ");
                     Console.WriteLine(listingActivity.GetPrompt());
                     AnimateCountdown(listingActivity.GetPauseLength());
                     Console.WriteLine(PlaythroughActivity(listingActivity));
-                    
+
                     FinishActivity(listingActivity);
 
+                    report.SetSeconds(listingActivity);
+
                     break;
+
+
                 case "4":
+                    Console.Write(report.GetGenerationMessage());
+                    AnimateLoading(2);
+                    Console.Clear();
+
+                    Console.WriteLine(report.GetReport());
+                    Console.Read();
+                    AnimateLoading(2);
+
                     break;
+
+
+                case "5":
+                    // This is the quit case. If the user selects 4 it will enter this case then
+                    // exit the loop and end the program.
+                    break;
+
+
                 default:
-                    Console.WriteLine("Invalid input");
+                    // This default case accounts for a user entry that does not match an item in
+                    // the menu. This will tell the user their answer is invalid and return them to
+                    // the menu selection.
+                    Console.Write("\nInvalid input. Refreshing menu selection screen...");
+                    AnimateLoading(2);
                     break;
             }
-        } while (menuSelection != "4");
+        } while (menuSelection != "5");
+
+        Console.WriteLine("Goodbye!");
     }
 }
