@@ -5,7 +5,7 @@ public class BreathingActivity : Activity
     private string _breathInMessage;
     private string _breathOutMessage;
 
-    public BreathingActivity() 
+    public BreathingActivity()
     {
         _breathDuration = 5;
         _onBreathIn = true;
@@ -26,10 +26,13 @@ This activity will help you relax by walking you through breathing in and out sl
     }
     public string GetBreathMessage()
     {
-        if (_onBreathIn) {
+        if (_onBreathIn)
+        {
             _onBreathIn = false;
             return _breathInMessage;
-        } else {
+        }
+        else
+        {
             _onBreathIn = true;
             return _breathOutMessage;
         }

@@ -1,3 +1,14 @@
+// For my exceeding requiements fulfillment, I created report functionality to my program. I did
+// this by first creating a "Report.cs" file. This contains the "Report" class. The class keeps
+// a record of the number of seconds each activity is done for as well as the total number of
+// seconds any activity is done for. The user can select to view a report of the time spent in
+// activities.
+
+// I also added the case in the main menu for if the user enters an option or anything that doesn't
+// show up in the menu. It will reset the menu for them to enter a selection again.
+
+// Added a goodbye message to after the user select "quit" in the menu.
+
 using System;
 
 class Program
@@ -8,7 +19,7 @@ class Program
 
         Report report = new Report();
 
-
+        // This function prints the menu to the screen before the user is prompted to select.
         static void Menu()
         {
             Console.Clear();
@@ -21,6 +32,8 @@ class Program
 Select a choice from the menu: ");
         }
 
+        // This function will create the "spinning stick" animation for the number of seconds
+        // passed into the function.
         static void AnimateLoading(int duration)
         {
             DateTime startTime = DateTime.Now;
@@ -51,6 +64,7 @@ Select a choice from the menu: ");
             Console.Write("\b \b");
         }
 
+        // Creates an animated timer counting down to 0 from the number passed in as an argument.
         static void AnimateCountdown(int duration)
         {
             for (int i = duration; i > 0; i--)
@@ -61,6 +75,8 @@ Select a choice from the menu: ");
             }
         }
 
+        // The consistent process used by all activities to introduce it to the user. It gets user
+        // duration input as well.
         static void IntroduceActivity(Activity activity)
         {
             Console.Clear();
@@ -74,35 +90,7 @@ Select a choice from the menu: ");
             AnimateLoading(activity.GetPauseLength());
         }
 
-        static string PlaythroughActivity(Activity activity)
-        {
-            DateTime startTime = DateTime.Now;
-            DateTime endTime = startTime.AddSeconds(activity.GetDuration());
-            int itemsListed = 0;
-            while (DateTime.Now < endTime)
-            {
-                switch (activity)
-                {
-                    case BreathingActivity breathingActivity:
-                        Console.Write(breathingActivity.GetBreathMessage());
-                        AnimateCountdown(breathingActivity.GetBreathDuration());
-                        Console.WriteLine();
-                        break;
-                    case ReflectionActivity reflectionActivity:
-                        Console.Write(reflectionActivity.GetQuestion() + " ");
-                        AnimateLoading(reflectionActivity.GetReflectionDuration());
-                        Console.WriteLine();
-                        break;
-                    case ListingActivity:
-                        Console.Write("> ");
-                        Console.ReadLine();
-                        itemsListed += 1;
-                        break;
-                }
-            }
-            return $"You listed {itemsListed} items!";
-        }
-
+        // This set of actions is consistent across the types of activities the user might select.
         static void FinishActivity(Activity activity)
         {
             Console.WriteLine(activity.GetCompleteMessage());
@@ -112,19 +100,29 @@ Select a choice from the menu: ");
             AnimateLoading(activity.GetPauseLength());
         }
 
+        // Beginning of the main program loop.
         do
         {
             Menu();
             menuSelection = Console.ReadLine();
 
+            // Opens up to the various menu selections a user might have made.
+            // The options are 1,2,3,4,5 and if they enter anything else it will refresh the menu.
             switch (menuSelection)
             {
                 case "1":
+                    // Case facilitates the breathing activity.
                     BreathingActivity breathingActivity = new BreathingActivity();
 
                     IntroduceActivity(breathingActivity);
 
-                    PlaythroughActivity(breathingActivity);
+                    DateTime endTimeBreath = DateTime.Now.AddSeconds(breathingActivity.GetDuration());
+                    while (DateTime.Now < endTimeBreath)
+                    {
+                        Console.Write(breathingActivity.GetBreathMessage());
+                        AnimateCountdown(breathingActivity.GetBreathDuration());
+                        Console.WriteLine();
+                    }
 
                     FinishActivity(breathingActivity);
 
@@ -134,6 +132,7 @@ Select a choice from the menu: ");
 
 
                 case "2":
+                    // Case facilitates the reflection activity.
                     ReflectionActivity reflectionActivity = new ReflectionActivity();
 
                     IntroduceActivity(reflectionActivity);
@@ -145,7 +144,13 @@ Select a choice from the menu: ");
                     AnimateCountdown(reflectionActivity.GetPauseLength());
                     Console.Clear();
 
-                    PlaythroughActivity(reflectionActivity);
+                    DateTime endTimeReflect = DateTime.Now.AddSeconds(reflectionActivity.GetDuration());
+                    while (DateTime.Now < endTimeReflect)
+                    {
+                        Console.Write(reflectionActivity.GetQuestion());
+                        AnimateLoading(reflectionActivity.GetReflectionDuration());
+                        Console.WriteLine();
+                    }
 
                     FinishActivity(reflectionActivity);
 
@@ -155,13 +160,22 @@ Select a choice from the menu: ");
 
 
                 case "3":
+                    // Case facilitates the listing activity.
                     ListingActivity listingActivity = new ListingActivity();
 
                     IntroduceActivity(listingActivity);
 
                     Console.WriteLine(listingActivity.GetPrompt());
                     AnimateCountdown(listingActivity.GetPauseLength());
-                    Console.WriteLine(PlaythroughActivity(listingActivity));
+
+                    DateTime endTimeList = DateTime.Now.AddSeconds(listingActivity.GetDuration());
+                    while (DateTime.Now < endTimeList)
+                    {
+                        Console.Write(listingActivity.GetEntryPoint());
+                        Console.ReadLine();
+                        listingActivity.SetItemsListed(listingActivity.GetItemsListed() + 1);
+                    }
+                    Console.WriteLine(listingActivity.GetListingReport());
 
                     FinishActivity(listingActivity);
 
@@ -171,6 +185,7 @@ Select a choice from the menu: ");
 
 
                 case "4":
+                    // Case facilitates the activity report generation.
                     Console.Write(report.GetGenerationMessage());
                     AnimateLoading(2);
                     Console.Clear();
@@ -198,6 +213,7 @@ Select a choice from the menu: ");
             }
         } while (menuSelection != "5");
 
+        Console.Clear();
         Console.WriteLine("Goodbye!");
     }
 }
