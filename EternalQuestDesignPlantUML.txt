@@ -1,0 +1,55 @@
+@startuml
+class Program {
+    - int score
+    - list<goal> goals
+
+    + string Menu()
+    + void SaveGoals(List<Goal> goals)
+    + list<goal> LoadGoals()
+}
+
+class Goal {
+    - string _goalName
+    - string _goalDescription
+    - int _points
+    - bool _isComplete
+
+    + Goal(string goalName, string goalDescription, int points)
+
+    + string DisplayGoal()
+    + void MarkComplete()
+    + int GetPoints()
+    + void SetPoints()
+}
+
+class Simple {
+    + Simple(string goalName, string goalDescription, int points)
+}
+
+class Eternal {
+    + Eternal(string goalName, string goalDescription, int points)
+
+    + void MarkComplete()
+}
+
+class Checklist {
+    - int _timesToComplete
+    - int _timesCompleted
+    - int _bonusPoints
+
+    + Checklist(string goalName, string goalDescription, int points,
+                int timesToComplete, int timesCompleted, int bonusPoints)
+
+    + string DisplayGoal()
+    + void AddEvent()
+    + void MarkComplete()
+    + int GetBonusPoints()
+    + void SetBonusPoints()
+}
+
+Goal <|-- Simple
+Goal <|-- Eternal
+Goal <|-- Checklist
+
+caption Interaction Note: The "Goal" class is a generic object definition that is used to build the other specific goal classes. Some notable interactions include theconstructors for the "Simple", "Eternal", and "Checklist"\nclass constructors passing the "goalName", "goalDescription", and "points" parameters to the base "Goal" class constructor. The "DisplayGoal()" and "MarkComplete()" methods in the "Goal" class are virtual classes\nthat are overidden. The "Checklist" class overrides both of those virtual methods while the "Eternal" class overrides only the "MarkComeplete()" method. The "Program" class handles all user interaction as well as storing\nthe total points and the list of all goal objects created.
+@enduml
