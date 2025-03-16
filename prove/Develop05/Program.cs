@@ -83,6 +83,7 @@ Which type of goal would you like to create? ";
         int score = 0;
         int menuSelection;
         string fileName;
+        
         do
         {
             Console.Write(DisplayMenu(score));
