@@ -8,15 +8,16 @@ class Program
         // many points that they have.
         static string DisplayMenu(int score)
         {
-            return $@"You have {score} points.
+            return $@"
+You have {score} points.
 
 Menu Options:
-1. Create New Goal
-2. List Goals
-3. Save Goals
-4. Load Goals
-5. Record Event
-6. Quit
+  1. Create New Goal
+  2. List Goals
+  3. Save Goals
+  4. Load Goals
+  5. Record Event
+  6. Quit
 Select a choice from the menu: ";
         }
 
@@ -81,7 +82,7 @@ Which type of goal would you like to create? ";
         List<Goal> goals = new List<Goal>();
         int score = 0;
         int menuSelection;
-
+        string fileName;
         do
         {
             Console.Write(DisplayMenu(score));
@@ -99,7 +100,6 @@ Which type of goal would you like to create? ";
                 case 1:
                     do
                     {
-                        Console.WriteLine("Create new goal selected");
                         Console.Write(DisplayCreateMenu());
                         try
                         {
@@ -142,16 +142,77 @@ Which type of goal would you like to create? ";
                     } while (menuSelection < 1 || menuSelection > 3);
                     break;
                 case 2:
-                    Console.WriteLine("List goals selected");
+                    Console.WriteLine("The goals are:");
+                    foreach (Goal goal in goals)
+                    {
+                        Console.WriteLine($"{goal.DisplayGoal()}");
+                    }
                     break;
                 case 3:
-                    Console.WriteLine("Save goals selected");
+                    Console.Write("Enter the file name: ");
+                    fileName = Console.ReadLine();
+                    using (StreamWriter outputFile = new StreamWriter(fileName))
+                    {
+                        outputFile.WriteLine(score);
+                        foreach (Goal goal in goals)
+                        {
+                            outputFile.WriteLine(goal.SaveGoal());
+                        }
+                    }
                     break;
                 case 4:
-                    Console.WriteLine("Load goals selected");
+                    Console.Write("Enter the file name: ");
+                    fileName = Console.ReadLine();
+                    string[] lines = System.IO.File.ReadAllLines(fileName);
+                    bool isFirstLine = true;
+
+                    foreach (string line in lines)
+                    {
+                        if (isFirstLine) {
+                            score = int.Parse(line);
+                            isFirstLine = false;
+                        } else {
+                            string[] parts = line.Split("|");
+                            if (parts[5] == "simple") {
+                                Simple goal = new Simple(parts[0],
+                                                         parts[1],
+                                                         int.Parse(parts[2]),
+                                                         int.Parse(parts[3]),
+                                                         parts[4]);
+                                goals.Add(goal);
+                            } else if (parts[5] == "eternal") {
+                                Eternal goal = new Eternal(parts[0],
+                                                           parts[1],
+                                                           int.Parse(parts[2]),
+                                                           int.Parse(parts[3]),
+                                                           parts[4]);
+                                goals.Add(goal);
+                            } else if (parts[5] == "checklist") {
+                                Checklist goal = new Checklist(parts[0],
+                                                               parts[1],
+                                                               int.Parse(parts[2]),
+                                                               int.Parse(parts[3]),
+                                                               parts[4],
+                                                               int.Parse(parts[6]),
+                                                               int.Parse(parts[7]),
+                                                               int.Parse(parts[8]));
+                                goals.Add(goal);
+                            }
+                        }
+                    }
                     break;
                 case 5:
-                    Console.WriteLine("Record event selected");
+                    Console.WriteLine("The goals are:");
+                    foreach (Goal goal in goals)
+                    {
+                        Console.WriteLine($"  {goal.GetName()}");
+                    }
+                    Console.Write("Which goal did you accomplish? ");
+                    int goalCompleted = int.Parse(Console.ReadLine()) - 1;
+                    Console.WriteLine($"Congratulations! You have earned {goals[goalCompleted].GetPoints()} points!");
+                    goals[goalCompleted].MarkComplete();
+                    score += goals[goalCompleted].GetPoints();
+                    Console.WriteLine($"You now have {score} points.");
                     break;
                 case 6:
                     Console.WriteLine("Quit selected");
