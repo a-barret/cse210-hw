@@ -1,0 +1,4 @@
+class AccountReport : Report
+{
+    
+}

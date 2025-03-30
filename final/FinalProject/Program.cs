@@ -12,10 +12,10 @@ class Program
 Select an action:
 0. Quit
 1. Add Transaction
-2. Save Transactions
-3. Load Transactions
-4. Generate Report
-5. View Transactions
+2. Save Accounts
+3. Load Accounts
+4. View Transactions
+5. Generate Report
 Enter your selection: ";
         }
 
@@ -28,14 +28,33 @@ Enter your selection: ";
             {
                 menuSelection = int.Parse(Console.ReadLine());
             }
-            catch
+            catch (FormatException)
             {
-                
+                Console.WriteLine("Must be entered as an integer.");
             }
             switch (menuSelection)
             {
+                default:
+                    Console.WriteLine("Invalid entry");
+                    break;
+                case 0:
+                    // Console.WriteLine("Quit has been selected");
+                    break;
                 case 1:
-
+                    Console.WriteLine("You have selected Add Transaction");
+                    break;
+                case 2:
+                    Console.WriteLine("You have selected Save Transactions");
+                    break;
+                case 3:
+                    Console.WriteLine("You have selected Load Transactions");
+                    break;
+                case 4:
+                    Console.WriteLine("You have selected View Transactions");
+                    break;
+                case 5:
+                    Console.WriteLine("You have selected Generate Report");
+                    break;
             }
         } while (menuSelection != 0);
     }

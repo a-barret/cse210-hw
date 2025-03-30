@@ -1,0 +1,4 @@
+class CategoryReport : Report
+{
+    
+}
