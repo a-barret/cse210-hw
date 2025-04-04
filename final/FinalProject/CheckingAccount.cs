@@ -1,10 +1,10 @@
 class CheckingAccount : Account
 {
-    private List<string> _cardNames;
+    private List<string> _cardOwners;
 
-    public CheckingAccount(string accountName, float interestRate, float startingBalance, string cardName)
+    public CheckingAccount(string accountName, float interestRate, float startingBalance, List<string> cardOwners)
         : base(accountName, interestRate, startingBalance)
     {
-        _cardNames = [cardName];
+        _cardOwners = cardOwners;
     }
 }

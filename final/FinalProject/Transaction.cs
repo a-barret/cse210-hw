@@ -1,6 +1,6 @@
 // I decided to have just one transaction class with no sub, income or expense
 // transaction classes because the same effect can be achieved by allowing
-// negative or positive values in the amount attribute of the transaction class.
+// negative or positive values in the "_amount" attribute of the transaction class.
 
 public class Transaction
 {
