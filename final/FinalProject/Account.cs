@@ -59,7 +59,7 @@ public class Account
         _transactions.Add(transaction);
         _balance += transaction.GetAmount();
     }
-    public void ImportTransaction(Transaction transaction)
+    public void LoadTransaction(Transaction transaction)
     {
         _transactions.Add(transaction);
     }
@@ -70,5 +70,9 @@ public class Account
     public int GetID()
     {
         return _ID;
+    }
+    public string GetName()
+    {
+        return _accountName;
     }
 }

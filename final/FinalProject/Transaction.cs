@@ -17,6 +17,13 @@ public class Transaction
     // CONSTRUCTORS
     //=============================================================================================
 
+    public Transaction(DateTime date, float amount, string category, string description)
+    {
+        _date = date;
+        _amount = amount;
+        _category = category;
+        _description = description;
+    }
     public Transaction(int accountID, DateTime date, float amount, string category, string description)
     {
         _parentAccountID = accountID;
@@ -32,7 +39,7 @@ public class Transaction
 
     public string DisplayTransaction()
     {
-        return _date.ToString("M/d/yy") + _amount.ToString() + _category + _description;
+        return _date.ToString("M/d/yy") + " Amount: " + _amount.ToString("C") + " Category: " + _category + " Description: " + _description;
     }
     public string ToCSV()
     {
@@ -45,5 +52,9 @@ public class Transaction
     public float GetAmount()
     {
         return _amount;
+    }
+    public string GetCategory()
+    {
+        return _category;
     }
 }
