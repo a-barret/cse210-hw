@@ -1,4 +1,4 @@
-using System;
+using System.IO;
 
 class Program
 {
@@ -13,8 +13,9 @@ Select an action:
   2. Add Account
   3. Save Accounts
   4. Load Accounts
-  5. View Transactions
-  6. Generate Report
+  5. View Accounts
+  6. View Transactions
+  7. Generate Report
 Enter your selection: ";
         }
 
@@ -83,6 +84,91 @@ Enter your selection: ";
                 }
             } while (notValid);
             return accountParts;
+        }
+
+        static void LoadAccountsFromCSV(string fileName, List<Account> accounts)
+        {
+            string[] lines = File.ReadAllLines(fileName);
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+                int ID = int.Parse(parts[0]);
+                string type = parts[1];
+                string name = parts[2];
+                float interestRate = float.Parse(parts[3]);
+                float balance = float.Parse(parts[4]);
+
+                if (type == "CheckingAccount")
+                {
+                    List<string> owners = new List<string>(parts[5].Split(';'));
+                    accounts.Add(new CheckingAccount(ID, name, interestRate, balance, owners));
+                }
+                else if (type == "SavingsAccount")
+                {
+                    accounts.Add(new SavingsAccount(ID, name, interestRate, balance));
+                }
+                else
+                {
+                    Console.WriteLine($"Unknown account type '{type}' on line: {line}");
+                }
+            }
+        }
+
+        static void LoadTransactionsFromCSV(string fileName, List<Account> accounts)
+        {
+            foreach (Account a in accounts)
+            {
+                a.ClearTransactions();
+            }
+            string[] lines = File.ReadAllLines(fileName);
+
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+                int accountID = int.Parse(parts[0]);
+                DateTime date = DateTime.Parse(parts[1]);
+                float amount = float.Parse(parts[2]);
+                string category = parts[3];
+                string description = parts[4];
+
+                Transaction t = new Transaction(accountID, date, amount, category, description);
+
+                Account target = accounts.Find(a => a.GetID() == accountID);
+
+
+                if (target != null)
+                {
+                    target.ImportTransaction(t);
+                }
+                else
+                {
+                    Console.WriteLine($"Warning: No account found for transaction on line: {line}");
+                }
+            }
+        }
+
+        static void SaveAccountsToCSV(string fileName, List<Account> accounts)
+        {
+            List<string> lines = new List<string>();
+            foreach (Account a in accounts)
+            {
+                lines.Add(a.ToCSV());
+            }
+            File.WriteAllLines(fileName, lines);
+        }
+
+        static void SaveTransactionsToCSV(string fileName, List<Account> accounts)
+        {
+            List<string> lines = new List<string>();
+            foreach (Account a in accounts)
+            {
+                foreach (Transaction t in a.GetTransactions())
+                {
+                    lines.Add(t.ToCSV());
+                }
+            }
+            File.WriteAllLines(fileName, lines);
         }
 
         // |======================================================================================|
@@ -166,11 +252,16 @@ Enter your selection: ";
                             }
                         } while (notValid);
 
+                        if ((categoryKeySelection <= 4 && amountEntry < 0) || (categoryKeySelection > 4 && amountEntry > 0))
+                        {
+                            amountEntry *= -1;
+                        }
+
                         Console.Write("Describe the transaction:\n> ");
                         string descriptionEntry = Console.ReadLine();
 
-                        Transaction transaction = new Transaction(DateTime.Now, amountEntry, categorySelection, descriptionEntry);
-                        accounts[accountSelection].AddTransaction(transaction);
+                        Transaction transaction = new Transaction(accountSelection, DateTime.Now, amountEntry, categorySelection, descriptionEntry);
+                        accounts[accountSelection].AddNewTransaction(transaction);
                     }
                     else
                     {
@@ -256,15 +347,55 @@ Enter your selection: ";
                     break;
                     
                 case 3:
-                    Console.WriteLine("You have selected Save Transactions");
+                    Console.WriteLine("You have selected Save Accounts");
+                    SaveAccountsToCSV("accounts.csv", accounts);
+                    SaveTransactionsToCSV("transactions.csv", accounts);
                     break;
                 case 4:
-                    Console.WriteLine("You have selected Load Transactions");
+                    Console.WriteLine("You have selected Load Accounts");
+                    
+                    try
+                    {
+                        LoadAccountsFromCSV("accounts.csv", accounts);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("\"accounts.csv\" could not be found.");
+                    }
+
+                    try
+                    {
+                        LoadTransactionsFromCSV("transactions.csv", accounts);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("\"transactions.csv\" could not be found.");
+                    }
+
                     break;
+
                 case 5:
-                    Console.WriteLine("You have selected View Transactions");
+                    Console.WriteLine("Account List:");
+                    Console.WriteLine(GetAccountList(accounts));
+                    Console.WriteLine("    ---------- End of Account List ----------   ");
                     break;
+
                 case 6:
+                    Console.WriteLine("Transaction List:");
+                    List<Transaction> allTransactions = new List<Transaction>();
+                    foreach (Account a in accounts)
+                    {
+                        allTransactions.AddRange(a.GetTransactions());
+                    }
+                    allTransactions.Sort((t1, t2) => t1.GetDate().CompareTo(t2.GetDate()));
+                    foreach (Transaction t in allTransactions)
+                    {
+                        Console.WriteLine(t.DisplayTransaction());
+                    }
+                    Console.WriteLine("    ---------- End of Transaction List ----------   ");
+                    break;
+
+                case 7:
                     Console.WriteLine("You have selected Generate Report");
                     break;
             }
