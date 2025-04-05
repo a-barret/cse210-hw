@@ -219,6 +219,7 @@ Enter your selection: ";
                 default:
                     Console.WriteLine("Invalid menu selection");
                     break;
+                    
                 case 0:
                     // Console.WriteLine("Quit has been selected");
                     break;
