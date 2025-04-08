@@ -225,63 +225,70 @@ Enter your selection: ";
                     break;
                 
                 case 1:
-                    Console.WriteLine("Select an account for the transaction:");
-                    Console.Write(GetAddMenu(GetAccountList(accounts)));
-                    do
+                    if (accounts.Count > 0)
                     {
-                        try
-                        {
-                            accountSelection = int.Parse(Console.ReadLine());
-                            accountSelectInvalid = false;
-                        }
-                        catch (FormatException)
-                        {
-                            Console.WriteLine("Must be entered as an integer.");
-                        }
-                    } while (accountSelectInvalid);
-
-                    if (0 <= accountSelection && accountSelection < accounts.Count)
-                    {
-                        bool notValid = true;
-                        float amountEntry = 0;
-                        string categorySelection = "";
-                        int categoryKeySelection = 0;
+                        Console.WriteLine("Select an account for the transaction:");
+                        Console.Write(GetAddMenu(GetAccountList(accounts)));
                         do
                         {
                             try
                             {
-                                Console.Write("Enter the amount: ");
-                                amountEntry = float.Parse(Console.ReadLine());
-                                Console.Write(GetCategoryMenu(GetCategoryList(categories)));
-                                categoryKeySelection = int.Parse(Console.ReadLine());
-                                categorySelection = categories[categoryKeySelection];
-                                notValid = false;
+                                accountSelection = int.Parse(Console.ReadLine());
+                                accountSelectInvalid = false;
                             }
                             catch (FormatException)
                             {
-                                Console.WriteLine("Amount must be a decimal value and category selection must be an integer.");
+                                Console.WriteLine("Must be entered as an integer.");
                             }
-                            catch (KeyNotFoundException)
-                            {
-                                Console.WriteLine("Invalid category number");
-                            }
-                        } while (notValid);
+                        } while (accountSelectInvalid);
 
-                        if ((categoryKeySelection <= 4 && amountEntry < 0) || (categoryKeySelection > 4 && amountEntry > 0))
+                        if (0 <= accountSelection && accountSelection < accounts.Count)
                         {
-                            amountEntry *= -1;
+                            bool notValid = true;
+                            float amountEntry = 0;
+                            string categorySelection = "";
+                            int categoryKeySelection = 0;
+                            do
+                            {
+                                try
+                                {
+                                    Console.Write("Enter the amount: ");
+                                    amountEntry = float.Parse(Console.ReadLine());
+                                    Console.Write(GetCategoryMenu(GetCategoryList(categories)));
+                                    categoryKeySelection = int.Parse(Console.ReadLine());
+                                    categorySelection = categories[categoryKeySelection];
+                                    notValid = false;
+                                }
+                                catch (FormatException)
+                                {
+                                    Console.WriteLine("Amount must be a decimal value and category selection must be an integer.");
+                                }
+                                catch (KeyNotFoundException)
+                                {
+                                    Console.WriteLine("Invalid category number");
+                                }
+                            } while (notValid);
+
+                            if ((categoryKeySelection <= 4 && amountEntry < 0) || (categoryKeySelection > 4 && amountEntry > 0))
+                            {
+                                amountEntry *= -1;
+                            }
+
+                            Console.Write("Describe the transaction:\n> ");
+                            string descriptionEntry = Console.ReadLine();
+
+                            Transaction transaction = new Transaction(accountSelection, DateTime.Now, amountEntry, categorySelection, descriptionEntry);
+                            accounts[accountSelection].AddNewTransaction(transaction);
+                            Console.WriteLine("Transaction added");
                         }
-
-                        Console.Write("Describe the transaction:\n> ");
-                        string descriptionEntry = Console.ReadLine();
-
-                        Transaction transaction = new Transaction(accountSelection, DateTime.Now, amountEntry, categorySelection, descriptionEntry);
-                        accounts[accountSelection].AddNewTransaction(transaction);
-                        Console.WriteLine("Transaction added");
+                        else
+                        {
+                            Console.WriteLine("Invalid Account ID");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Invalid Account ID");
+                        Console.WriteLine("There are no accounts to add transactions to.");
                     }
                     Console.Write("Press ENTER when done ");
                     Console.Read();
@@ -369,10 +376,17 @@ Enter your selection: ";
                     break;
 
                 case 3:
-                    Console.WriteLine("Saving accounts...");
-                    SaveAccountsToCSV("accounts.csv", accounts);
-                    SaveTransactionsToCSV("transactions.csv", accounts);
-                    Console.WriteLine("Accounts have been saved");
+                    if (accounts.Count > 0)
+                    {
+                        Console.WriteLine("Saving accounts...");
+                        SaveAccountsToCSV("accounts.csv", accounts);
+                        SaveTransactionsToCSV("transactions.csv", accounts);
+                        Console.WriteLine("Accounts have been saved");
+                    }
+                    else
+                    {
+                        Console.WriteLine("There are no accounts to save.");
+                    }
                     Console.Write("Press ENTER when done ");
                     Console.Read();
                     break;
