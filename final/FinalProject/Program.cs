@@ -187,7 +187,8 @@ Enter your selection: ";
     {
 
         List<Account> accounts = new List<Account>();
-        Dictionary<int, string> categories = new Dictionary<int, string>{
+        Dictionary<int, string> categories = new Dictionary<int, string>
+        {
             {1,"Income"},{2,"Gifts"}, {3,"Loan Disbursement"}, {4,"Grants & Scholarships"},
             {5,"Rent"}, {6,"Utilities"}, {7,"Electric"}, {8,"Laundry"}, {9,"Groceries"},
             {10,"School"}, {11,"Home"}, {12,"Eating Out"}, {13,"Loans"}, {14,"Tithing"},
