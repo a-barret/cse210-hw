@@ -3,6 +3,8 @@ using System.Reflection.Metadata.Ecma335;
 
 class Program
 {
+    // I keep the menu in this function as it is large and bogs down the code if it is down inside
+    // the main program.
     static string GetMenu()
     {
         return @"
@@ -18,6 +20,10 @@ Select an action:
 Enter your selection: ";
     }
 
+    // The "Add", "Category", "Report" and "AccountType" menus change depending on user entry and
+    // program development so I keep them in these functions for easier modularity. I am using "@"
+    // for literal string rules which allows the strings to resemble better how they will look when
+    // put into the terminal.
     static string GetAddMenu(string accountString)
     {
         return accountString + "Enter your account selection: ";
@@ -30,22 +36,24 @@ Enter your selection: ";
 
     static string GetAccountTypeMenu()
     {
-        return @"Select an account type:
-0. Return
-1. Checking
-2. Savings
+        return @"Select an action:
+0. Return to main menu
+1. Create checking account
+2. Create savings account
 Enter your selection: ";
     }
 
     static string GetReportMenu()
     {
-        return @"Select a report type:
+        return @"Select a report type to create:
 1. General Report
 2. Category Report
 3. Account Report
 Enter your selection: ";
     }
 
+    // The list of accounts is shown in multiple places so a function here is faster to write.
+    // I have written the "GetCategoryList" function for the same reason.
     static string GetAccountList(List<Account> accounts)
     {
         string accountString = "";
@@ -66,6 +74,8 @@ Enter your selection: ";
         return categoriesString;
     }
 
+    // All the account so far have some basic parts that are the same. This was more efficient to
+    // write than putting the same thing for each type of account creation.
     static List<object> CreateAccountDialog()
     {
         bool notValid = true;
@@ -94,6 +104,8 @@ Enter your selection: ";
         return accountParts;
     }
 
+    // For saving and loading functions I felt it would be best to keep them in functions in case
+    // there are other scenarios where saving or loading the user data makes sense.
     static void SaveAccountsToCSV(string fileName, List<Account> accounts)
     {
         List<string> lines = new List<string>();
@@ -185,8 +197,11 @@ Enter your selection: ";
 
     static void Main(string[] args)
     {
-
         List<Account> accounts = new List<Account>();
+
+        // This a predefined list of categories for transactions however, there is potential here
+        // for another class called "Category". A user could add their own categories and provide
+        // for more customization.
         Dictionary<int, string> categories = new Dictionary<int, string>
         {
             {1,"Income"},{2,"Gifts"}, {3,"Loan Disbursement"}, {4,"Grants & Scholarships"},
@@ -197,12 +212,19 @@ Enter your selection: ";
             {24,"Travel Fares"}, {25,"Car Insurance"}, {26,"Health Insurance"},
             {27,"Personal Liability Insurance"}, {28,"Doctors Visits"}, {29,"Misc"}
         };
+
         int menuSelection = -1;
 
         do
         {
+            int accountSelection = -1; // variable is used in multiple of the main menu actions and needs to be reset after each action so I have placed it outside any one case of the menu selection.
+            bool accountSelectInvalid = true; // Same with this variable as the line above.
+
             Console.Clear();
             Console.Write(GetMenu());
+
+            // Opted for try-catch blocks throughout the program as I have not expiremented with
+            // more efficient techniques and wanted to stick with the familiar for now.
             try
             {
                 menuSelection = int.Parse(Console.ReadLine());
@@ -211,9 +233,6 @@ Enter your selection: ";
             {
                 Console.WriteLine("Must be entered as an integer.");
             }
-
-            int accountSelection = -1;
-            bool accountSelectInvalid = true;
 
             switch (menuSelection)
             {
@@ -319,6 +338,7 @@ Enter your selection: ";
                             default:
                                 Console.WriteLine("Invalid menu selection");
                                 break;
+
                             case 0:
                                 notValidType = false;
                                 break;
@@ -359,6 +379,9 @@ Enter your selection: ";
                                 accounts.Add(checkingAccount);
                                 Console.WriteLine("Account created");
                                 notValidType = false;
+
+                                Console.Write("Press ENTER when done ");
+                                Console.Read();
                                 break;
 
                             case 2:
@@ -368,12 +391,13 @@ Enter your selection: ";
                                 accounts.Add(savingsAccount);
                                 Console.WriteLine("Account created");
                                 notValidType = false;
+
+                                Console.Write("Press ENTER when done ");
+                                Console.Read();
                                 break;
                         }
 
                     } while (notValidType);
-                    Console.Write("Press ENTER when done ");
-                    Console.Read();
                     break;
 
                 case 3:
